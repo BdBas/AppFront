@@ -125,7 +125,11 @@ const App = () => {
     correoPersonal: "", 
     correoInstitucional: "", 
     password: "", 
-    role: "lector" 
+    role: "lector",
+    dependencia: "",
+    cargo: "",
+    telefonoInterno: "",
+    turnoLaboral: ""
   });
   const [loggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
@@ -251,6 +255,14 @@ const App = () => {
   const [personasFiltros, setPersonasFiltros] = useState({ nombre: '', apellido: '', cedula: '', idInstitucional: '', rolUniversidad: '', carrera: '', correoInstitucional: '' });
   const [personasLoading, setPersonasLoading] = useState(false);
   const [tipoExportacionPersonas, setTipoExportacionPersonas] = useState(null);
+
+  const [mostrarRecuperar, setMostrarRecuperar] = useState(false);
+  const [mostrarReset, setMostrarReset] = useState(false);
+  const [correoRecuperar, setCorreoRecuperar] = useState("");
+  const [tokenReset, setTokenReset] = useState("");
+  const [nuevaPassword, setNuevaPassword] = useState("");
+  const [mensajeRecuperar, setMensajeRecuperar] = useState("");
+  const [mensajeReset, setMensajeReset] = useState("");
 
   useEffect(() => {
     if (role === "lector") {
@@ -513,7 +525,11 @@ const App = () => {
         correoPersonal: "", 
         correoInstitucional: "", 
         password: "", 
-        role: "lector" 
+        role: "lector",
+        dependencia: "",
+        cargo: "",
+        telefonoInterno: "",
+        turnoLaboral: ""
       });
       handleMenuChange("inicio");
     } catch {
@@ -570,7 +586,11 @@ const App = () => {
       correoPersonal: "", 
       correoInstitucional: "", 
       password: "", 
-      role: "lector" 
+      role: "lector",
+      dependencia: "",
+      cargo: "",
+      telefonoInterno: "",
+      turnoLaboral: ""
     });
     setFormData({ 
       nombre: "", 
@@ -1430,6 +1450,45 @@ const App = () => {
     setTipoExportacionPersonas(null);
   };
 
+  // Handler para solicitar recuperación
+  const handleRecuperarPassword = async () => {
+    setMensajeRecuperar("");
+    if (!correoRecuperar) {
+      setMensajeRecuperar("Por favor ingresa tu correo institucional.");
+      return;
+    }
+    try {
+      await axios.post("http://localhost:5000/recuperar-password", { correoInstitucional: correoRecuperar });
+      setMensajeRecuperar("Si el correo existe, recibirás un mensaje con instrucciones para restablecer tu contraseña.");
+    } catch (error) {
+      setMensajeRecuperar(error.response?.data?.error || "Error al solicitar recuperación.");
+    }
+  };
+
+  // Handler para restablecer contraseña
+  const handleResetPassword = async () => {
+    setMensajeReset("");
+    if (!correoRecuperar || !tokenReset || !nuevaPassword) {
+      setMensajeReset("Completa todos los campos.");
+      return;
+    }
+    try {
+      await axios.post("http://localhost:5000/reset-password", {
+        correoInstitucional: correoRecuperar,
+        token: tokenReset,
+        nuevaPassword
+      });
+      setMensajeReset("Contraseña restablecida correctamente. Ya puedes iniciar sesión.");
+      setMostrarReset(false);
+      setMostrarRecuperar(false);
+      setCorreoRecuperar("");
+      setTokenReset("");
+      setNuevaPassword("");
+    } catch (error) {
+      setMensajeReset(error.response?.data?.error || "Error al restablecer la contraseña.");
+    }
+  };
+
   return (
     <div className="app-container">
       {loggedIn && <Header className="app-header"/>}
@@ -1502,6 +1561,79 @@ const App = () => {
             </select><br />
             <button onClick={login}>Entrar</button>
             <button onClick={() => handleMenuChange("inicio")}>Volver</button>
+            <button onClick={() => setMostrarRecuperar(true)}>¿Olvidaste tu contraseña?</button>
+          </div>
+        )}
+
+        {mostrarRecuperar && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Recuperar Contraseña</h3>
+              <div className="form-group">
+                <label>Correo Institucional:</label>
+                <input
+                  type="email"
+                  value={correoRecuperar}
+                  onChange={(e) => setCorreoRecuperar(e.target.value)}
+                  required
+                />
+              </div>
+              {mensajeRecuperar && <p className="mensaje">{mensajeRecuperar}</p>}
+              <div className="button-group">
+                <button onClick={handleRecuperarPassword}>Solicitar Recuperación</button>
+                <button onClick={() => {
+                  setMostrarRecuperar(false);
+                  setCorreoRecuperar("");
+                  setMensajeRecuperar("");
+                }}>Cancelar</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {mostrarReset && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Restablecer Contraseña</h3>
+              <div className="form-group">
+                <label>Correo Institucional:</label>
+                <input
+                  type="email"
+                  value={correoRecuperar}
+                  onChange={(e) => setCorreoRecuperar(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Token de Recuperación:</label>
+                <input
+                  type="text"
+                  value={tokenReset}
+                  onChange={(e) => setTokenReset(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Nueva Contraseña:</label>
+                <input
+                  type="password"
+                  value={nuevaPassword}
+                  onChange={(e) => setNuevaPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {mensajeReset && <p className="mensaje">{mensajeReset}</p>}
+              <div className="button-group">
+                <button onClick={handleResetPassword}>Restablecer Contraseña</button>
+                <button onClick={() => {
+                  setMostrarReset(false);
+                  setCorreoRecuperar("");
+                  setTokenReset("");
+                  setNuevaPassword("");
+                  setMensajeReset("");
+                }}>Cancelar</button>
+              </div>
+            </div>
           </div>
         )}
 
