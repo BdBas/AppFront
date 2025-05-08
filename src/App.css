@@ -125,3 +125,20 @@
   background-color: #f8f9fa;
   color: #333;
 }
+
+/* Estilos para el banner de error de servidor */
+.servidor-caido-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #c0392b;
+  color: white;
+  text-align: center;
+  padding: 12px 0;
+  z-index: 9999;
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}

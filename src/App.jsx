@@ -255,7 +255,9 @@ const App = () => {
   const [personasFiltros, setPersonasFiltros] = useState({ nombre: '', apellido: '', cedula: '', idInstitucional: '', rolUniversidad: '', carrera: '', correoInstitucional: '' });
   const [personasLoading, setPersonasLoading] = useState(false);
   const [tipoExportacionPersonas, setTipoExportacionPersonas] = useState(null);
+  const [servidorCaido, setServidorCaido] = useState(false);
 
+  // Estados para recuperación de contraseña
   const [mostrarRecuperar, setMostrarRecuperar] = useState(false);
   const [mostrarReset, setMostrarReset] = useState(false);
   const [correoRecuperar, setCorreoRecuperar] = useState("");
@@ -263,6 +265,27 @@ const App = () => {
   const [nuevaPassword, setNuevaPassword] = useState("");
   const [mensajeRecuperar, setMensajeRecuperar] = useState("");
   const [mensajeReset, setMensajeReset] = useState("");
+
+  // Interceptor global de Axios para manejar errores de red
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      response => {
+        if (servidorCaido) setServidorCaido(false);
+        return response;
+      },
+      error => {
+        if (
+          error.code === "ERR_NETWORK" ||
+          error.message === "Network Error" ||
+          error.response === undefined
+        ) {
+          setServidorCaido(true);
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => axios.interceptors.response.eject(interceptor);
+  }, [servidorCaido]);
 
   useEffect(() => {
     if (role === "lector") {
@@ -1644,6 +1667,7 @@ const App = () => {
               <div className="panelAdministradorCuadro">
                   <h1>Panel de Administrador</h1>
                   <div className="admin-menu-btns">
+                    <button onClick={() => setAdminView("nuevo_usuario")}>Registrar Nuevo Usuario</button>
                     <button onClick={() => setAdminView("registro")}>Registro de Personas</button>
                     <button onClick={() => {
                       setAdminView("ver_registros");
