@@ -125,11 +125,7 @@ const App = () => {
     correoPersonal: "", 
     correoInstitucional: "", 
     password: "", 
-    role: "lector",
-    dependencia: "",
-    cargo: "",
-    telefonoInterno: "",
-    turnoLaboral: ""
+    role: "lector" 
   });
   const [loggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
@@ -255,37 +251,6 @@ const App = () => {
   const [personasFiltros, setPersonasFiltros] = useState({ nombre: '', apellido: '', cedula: '', idInstitucional: '', rolUniversidad: '', carrera: '', correoInstitucional: '' });
   const [personasLoading, setPersonasLoading] = useState(false);
   const [tipoExportacionPersonas, setTipoExportacionPersonas] = useState(null);
-  const [servidorCaido, setServidorCaido] = useState(false);
-
-  // Estados para recuperación de contraseña
-  const [mostrarRecuperar, setMostrarRecuperar] = useState(false);
-  const [mostrarReset, setMostrarReset] = useState(false);
-  const [correoRecuperar, setCorreoRecuperar] = useState("");
-  const [tokenReset, setTokenReset] = useState("");
-  const [nuevaPassword, setNuevaPassword] = useState("");
-  const [mensajeRecuperar, setMensajeRecuperar] = useState("");
-  const [mensajeReset, setMensajeReset] = useState("");
-
-  // Interceptor global de Axios para manejar errores de red
-  useEffect(() => {
-    const interceptor = axios.interceptors.response.use(
-      response => {
-        if (servidorCaido) setServidorCaido(false);
-        return response;
-      },
-      error => {
-        if (
-          error.code === "ERR_NETWORK" ||
-          error.message === "Network Error" ||
-          error.response === undefined
-        ) {
-          setServidorCaido(true);
-        }
-        return Promise.reject(error);
-      }
-    );
-    return () => axios.interceptors.response.eject(interceptor);
-  }, [servidorCaido]);
 
   useEffect(() => {
     if (role === "lector") {
@@ -536,7 +501,7 @@ const App = () => {
 
   const register = async () => {
     try {
-      await axios.post("https://app-back-one.vercel.app//api/register", user);
+      await axios.post("https://app-back-delta.vercel.app/api/register", user);
       toast.success("Usuario registrado");
       setUser({ 
         nombre: "", 
@@ -548,11 +513,7 @@ const App = () => {
         correoPersonal: "", 
         correoInstitucional: "", 
         password: "", 
-        role: "lector",
-        dependencia: "",
-        cargo: "",
-        telefonoInterno: "",
-        turnoLaboral: ""
+        role: "lector" 
       });
       handleMenuChange("inicio");
     } catch {
@@ -573,7 +534,7 @@ const App = () => {
         return;
       }
 
-      const response = await axios.post("https://app-back-one.vercel.app/api/login", {
+      const response = await axios.post("https://app-back-delta.vercel.app/api/login", {
         correoInstitucional: user.correoInstitucional,
         password: user.password,
         role: user.role
@@ -609,11 +570,7 @@ const App = () => {
       correoPersonal: "", 
       correoInstitucional: "", 
       password: "", 
-      role: "lector",
-      dependencia: "",
-      cargo: "",
-      telefonoInterno: "",
-      turnoLaboral: ""
+      role: "lector" 
     });
     setFormData({ 
       nombre: "", 
@@ -754,7 +711,7 @@ const App = () => {
         formDataToSend.append('imagen', formData.imagen);
       }
   
-      const response = await axios.post("https://app-back-one.vercel.app/api/save", formDataToSend, {
+      const response = await axios.post("https://app-back-delta.vercel.app/api/save", formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
   
@@ -793,7 +750,7 @@ const App = () => {
 
   const fetchHuellas = async () => {
     try {
-      const response = await axios.get("https://app-back-one.vercel.app/api/huellas");
+      const response = await axios.get("https://app-back-delta.vercel.app/api/huellas");
       setHuellas(response.data);
     } catch {
       toast.error("Error al obtener los datos");
@@ -818,7 +775,7 @@ const App = () => {
       setRegistroEliminado(registro);
       
       // Luego eliminamos
-      await axios.delete(`https://app-back-one.vercel.app/api/huellas/${registroAEliminar}`);
+      await axios.delete(`https://app-back-delta.vercel.app/api/huellas/${registroAEliminar}`);
       
       toast(
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '10px' }}>
@@ -914,7 +871,7 @@ const App = () => {
       }
       
       console.log("Enviando datos al servidor...");
-      const response = await axios.post("https://app-back-one.vercel.app/api/save", formDataToSend, {
+      const response = await axios.post("https://app-back-delta.vercel.app/api/save", formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       
@@ -986,7 +943,7 @@ const App = () => {
         formDataToSend.append("imagen", formData.imagen);
       }
     
-      const response = await axios.put(`https://app-back-one.vercel.app/api/huellas/${registroEditando._id}`, formDataToSend, {
+      const response = await axios.put(`https://app-back-delta.vercel.app/api/huellas/${registroEditando._id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
     
@@ -1124,14 +1081,14 @@ const App = () => {
         return;
       }
 
-      const response = await axios.get(`https://app-back-one.vercel.app/api/buscar-carnet/${busquedaCarnet}`);
+      const response = await axios.get(`https://app-back-delta.vercel.app/api/buscar-carnet/${busquedaCarnet}`);
       
       if (response.data.persona) {
         setPersonaEncontrada(response.data.persona);
         setMensajeError("");
         // Llamar a registrar-acceso automáticamente
         try {
-          const accesoResp = await axios.post("https://app-back-one.vercel.app/api/registrar-acceso", {
+          const accesoResp = await axios.post("https://app-back-delta.vercel.app/api/registrar-acceso", {
             carnet: busquedaCarnet
           });
           setTipoAcceso(accesoResp.data.tipo);
@@ -1176,7 +1133,7 @@ const App = () => {
         return;
       }
 
-      const response = await axios.post("https://app-back-one.vercel.app/api/registrar-visitante", visitanteForm);
+      const response = await axios.post("https://app-back-delta.vercel.app/api/registrar-visitante", visitanteForm);
       toast.success("Visitante registrado exitosamente");
       setVisitanteForm({
         nombre: "",
@@ -1219,7 +1176,7 @@ const App = () => {
         limit: accesosLimit,
         ...accesosFiltros
       };
-      const res = await axios.get("https://app-back-one.vercel.app/api/accesos", { params });
+      const res = await axios.get("https://app-back-delta.vercel.app/api/accesos", { params });
       setAccesos(res.data.accesos);
       setAccesosTotal(res.data.total);
     } catch (error) {
@@ -1240,7 +1197,7 @@ const App = () => {
     setExportando(true);
     try {
       const params = { ...accesosFiltros, page: 1, limit: 10000 };
-      const res = await axios.get("https://app-back-one.vercel.app/api/accesos", { params });
+      const res = await axios.get("https://app-back-delta.vercel.app/api/accesos", { params });
       return res.data.accesos;
     } catch {
       toast.error("Error al obtener todos los accesos");
@@ -1324,7 +1281,7 @@ const App = () => {
     setPersonasLoading(true);
     try {
       const params = { ...personasFiltros, page: personasPage, limit: personasLimit };
-      const res = await axios.get("https://app-back-one.vercel.app/api/personas", { params });
+      const res = await axios.get("https://app-back-delta.vercel.app/api/personas", { params });
       setPersonas(res.data.personas);
       setPersonasTotal(res.data.total);
     } catch (error) {
@@ -1346,7 +1303,7 @@ const App = () => {
     setExportando(true);
     try {
       const params = { ...personasFiltros, page: 1, limit: 10000 };
-      const res = await axios.get("https://app-back-one.vercel.app/api/personas", { params });
+      const res = await axios.get("https://app-back-delta.vercel.app/api/personas", { params });
       return res.data.personas;
     } catch {
       toast.error("Error al obtener todas las personas");
@@ -1473,45 +1430,6 @@ const App = () => {
     setTipoExportacionPersonas(null);
   };
 
-  // Handler para solicitar recuperación
-  const handleRecuperarPassword = async () => {
-    setMensajeRecuperar("");
-    if (!correoRecuperar) {
-      setMensajeRecuperar("Por favor ingresa tu correo institucional.");
-      return;
-    }
-    try {
-      await axios.post("http://localhost:5000/recuperar-password", { correoInstitucional: correoRecuperar });
-      setMensajeRecuperar("Si el correo existe, recibirás un mensaje con instrucciones para restablecer tu contraseña.");
-    } catch (error) {
-      setMensajeRecuperar(error.response?.data?.error || "Error al solicitar recuperación.");
-    }
-  };
-
-  // Handler para restablecer contraseña
-  const handleResetPassword = async () => {
-    setMensajeReset("");
-    if (!correoRecuperar || !tokenReset || !nuevaPassword) {
-      setMensajeReset("Completa todos los campos.");
-      return;
-    }
-    try {
-      await axios.post("http://localhost:5000/reset-password", {
-        correoInstitucional: correoRecuperar,
-        token: tokenReset,
-        nuevaPassword
-      });
-      setMensajeReset("Contraseña restablecida correctamente. Ya puedes iniciar sesión.");
-      setMostrarReset(false);
-      setMostrarRecuperar(false);
-      setCorreoRecuperar("");
-      setTokenReset("");
-      setNuevaPassword("");
-    } catch (error) {
-      setMensajeReset(error.response?.data?.error || "Error al restablecer la contraseña.");
-    }
-  };
-
   return (
     <div className="app-container">
       {loggedIn && <Header className="app-header"/>}
@@ -1584,79 +1502,6 @@ const App = () => {
             </select><br />
             <button onClick={login}>Entrar</button>
             <button onClick={() => handleMenuChange("inicio")}>Volver</button>
-            <button onClick={() => setMostrarRecuperar(true)}>¿Olvidaste tu contraseña?</button>
-          </div>
-        )}
-
-        {mostrarRecuperar && (
-          <div className="modal">
-            <div className="modal-content">
-              <h3>Recuperar Contraseña</h3>
-              <div className="form-group">
-                <label>Correo Institucional:</label>
-                <input
-                  type="email"
-                  value={correoRecuperar}
-                  onChange={(e) => setCorreoRecuperar(e.target.value)}
-                  required
-                />
-              </div>
-              {mensajeRecuperar && <p className="mensaje">{mensajeRecuperar}</p>}
-              <div className="button-group">
-                <button onClick={handleRecuperarPassword}>Solicitar Recuperación</button>
-                <button onClick={() => {
-                  setMostrarRecuperar(false);
-                  setCorreoRecuperar("");
-                  setMensajeRecuperar("");
-                }}>Cancelar</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {mostrarReset && (
-          <div className="modal">
-            <div className="modal-content">
-              <h3>Restablecer Contraseña</h3>
-              <div className="form-group">
-                <label>Correo Institucional:</label>
-                <input
-                  type="email"
-                  value={correoRecuperar}
-                  onChange={(e) => setCorreoRecuperar(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Token de Recuperación:</label>
-                <input
-                  type="text"
-                  value={tokenReset}
-                  onChange={(e) => setTokenReset(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Nueva Contraseña:</label>
-                <input
-                  type="password"
-                  value={nuevaPassword}
-                  onChange={(e) => setNuevaPassword(e.target.value)}
-                  required
-                />
-              </div>
-              {mensajeReset && <p className="mensaje">{mensajeReset}</p>}
-              <div className="button-group">
-                <button onClick={handleResetPassword}>Restablecer Contraseña</button>
-                <button onClick={() => {
-                  setMostrarReset(false);
-                  setCorreoRecuperar("");
-                  setTokenReset("");
-                  setNuevaPassword("");
-                  setMensajeReset("");
-                }}>Cancelar</button>
-              </div>
-            </div>
           </div>
         )}
 
@@ -1667,7 +1512,6 @@ const App = () => {
               <div className="panelAdministradorCuadro">
                   <h1>Panel de Administrador</h1>
                   <div className="admin-menu-btns">
-                    <button onClick={() => setAdminView("nuevo_usuario")}>Registrar Nuevo Usuario</button>
                     <button onClick={() => setAdminView("registro")}>Registro de Personas</button>
                     <button onClick={() => {
                       setAdminView("ver_registros");
@@ -2157,7 +2001,7 @@ const App = () => {
                               {huella.imagen && (
                                 <div className="admin-card-img">
                                   <img 
-                                    src={`https://app-back-one.vercel.app/api/huellas/${huella._id}/imagen`} 
+                                    src={`https://app-back-delta.vercel.app/api/huellas/${huella._id}/imagen`} 
                                     alt="Imagen de perfil"
                                   />
                                 </div>
@@ -2216,7 +2060,7 @@ const App = () => {
                         <div key={key} className="detalle-persona-row">
                           <strong className="detalle-campo-label">{formatearCampo(key)}:</strong> 
                           {key === 'imagen' && value ? (
-                            <img src={`https://app-back-one.vercel.app/api/huellas/${registroDetalle._id}/imagen`} alt="Imagen de la persona" style={{maxWidth: '180px', maxHeight: '180px', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.12)', marginLeft: '10px'}} />
+                            <img src={`https://app-back-delta.vercel.app/api/huellas/${registroDetalle._id}/imagen`} alt="Imagen de la persona" style={{maxWidth: '180px', maxHeight: '180px', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.12)', marginLeft: '10px'}} />
                           ) : (
                             <span className="detalle-campo-valor">{value || '-'}</span>
                           )}
@@ -2297,7 +2141,7 @@ const App = () => {
                     {personaEncontrada.imagen && (
                       <div className="lector-persona-img">
                         <img
-                          src={`https://app-back-one.vercel.app/api/huellas/${personaEncontrada._id}/imagen`}
+                          src={`https://app-back-delta.vercel.app/api/huellas/${personaEncontrada._id}/imagen`}
                           alt="Foto de la persona"
                         />
                       </div>
@@ -2340,7 +2184,7 @@ const App = () => {
                       className="modal-confirm-delete"
                       onClick={async () => {
                         try {
-                          const response = await axios.post("https://app-back-one.vercel.app/api/verify-password", {
+                          const response = await axios.post("https://app-back-delta.vercel.app/api/verify-password", {
                             correoInstitucional: user.correoInstitucional,
                             password: lectorPassword
                           });
